@@ -14,10 +14,12 @@ class AuthService:
         access_token = create_access_token(data={"sub": f"{user.id}", "role": user.role})
         return access_token
 
-    def register_user(self, username: str, email: str, password: str):
+    def register_user(self, username: str, email: str, password: str, role: str = "student"):
+        normalized_role = "student" if role not in {"student", "employer"} else role
         new_user = RegularUserCreate(
-            username=username, 
-            email=email, 
-            password=encrypt_password(password)
+            username=username,
+            email=email,
+            password=encrypt_password(password),
+            role=normalized_role,
         )
         return self.user_repo.create(new_user)

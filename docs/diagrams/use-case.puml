@@ -1,0 +1,39 @@
+@startuml
+!pragma layout smetana
+skinparam shadowing false
+skinparam actorBorderColor #1B365D
+skinparam actorFontColor #1E232D
+skinparam usecaseBackgroundColor #FFFFFF
+skinparam usecaseBorderColor #1B365D
+skinparam usecaseFontColor #1E232D
+skinparam rectangleBorderColor #1B365D
+skinparam rectangleBackgroundColor #F8FAFC
+skinparam arrowColor #1B365D
+
+actor "Student" as AStudent
+
+rectangle "Internship Platform" {
+  usecase "Browse Internships" as UCBrowse
+  usecase "Apply to Internship" as UCApply
+  usecase "Respond to Offer" as UCRespond
+  usecase "Accept Offer" as UCAccept
+  usecase "Decline Offer" as UCDecline
+  usecase "Post Internship Listing" as UCPost
+  usecase "Manage Internship Listings" as UCManage
+  usecase "Review Applicants" as UCReview
+  usecase "Send Offer" as UCSend
+}
+
+actor "Employer" as AEmployer
+
+AStudent --> UCBrowse
+AStudent --> UCApply
+AStudent --> UCRespond
+UCPost <-- AEmployer
+UCManage <-- AEmployer
+UCReview <-- AEmployer
+UCAccept ..> UCRespond : <<extend>>
+UCDecline ..> UCRespond : <<extend>>
+UCSend ..> UCReview : <<extend>>
+
+@enduml

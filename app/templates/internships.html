@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Browse internships | InterHub{% endblock %}
+
+{% block content %}
+<div class="internship-page">
+  <header class="internship-header">
+    <a class="brand-wordmark internship-brand" href="{{ url_for('index_view') }}">Inter<span class="brand-highlight">Hub</span></a>
+    <nav class="internship-nav" aria-label="Main navigation">
+      <a href="{{ url_for('browse_internships') }}" class="active">Browse</a>
+      <a href="{{ url_for('student_activity') }}">My activity</a>
+      <a href="{{ url_for('logout') }}">Sign out</a>
+    </nav>
+  </header>
+
+  <main class="internship-main">
+    <section class="internship-shell">
+      <div class="internship-topbar">
+        <div>
+          <p class="internship-kicker">Student opportunities</p>
+          <h1>Browse internships</h1>
+        </div>
+        <span class="status-label status-label-success">Open listings</span>
+      </div>
+
+      <form class="internship-search" method="get" action="{{ url_for('browse_internships') }}">
+        <label class="visually-hidden" for="search-term">Search internships</label>
+        <input id="search-term" name="q" type="search" value="{{ query }}" placeholder="Search by internship title">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+
+      {% if listings %}
+      <div class="listing-grid" style="margin-top: 2rem;">
+        {% for listing in listings %}
+        <article class="listing-card">
+          <div class="listing-head">
+            <span class="status-label status-label-success">Open</span>
+            <span class="listing-pay">{{ 'Paid' if listing.isPaid else 'Unpaid' }}</span>
+          </div>
+          <h2>{{ listing.title }}</h2>
+          <p class="listing-description">{{ listing.description }}</p>
+
+          {% set applied = listing.listingID in applied_listing_ids %}
+          {% if applied %}
+          <div class="alert alert-success mb-2" role="alert">You already applied to this internship.</div>
+          {% else %}
+          <form method="post" action="{{ url_for('apply_to_internship', listing_id=listing.listingID) }}" enctype="multipart/form-data">
+            <label for="cover-letter-{{ listing.listingID }}" class="form-label">Cover note</label>
+            <textarea
+              id="cover-letter-{{ listing.listingID }}"
+              name="cover_letter"
+              rows="4"
+              placeholder="Tell the employer why this internship fits your goals."
+              required
+            ></textarea>
+            <label for="document-{{ listing.listingID }}" class="form-label">Supporting document</label>
+            <input
+              id="document-{{ listing.listingID }}"
+              name="document"
+              type="file"
+              class="application-document-input"
+              accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+            >
+            <button type="submit" class="btn btn-primary full-width">Apply now</button>
+          </form>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state">
+        <h2>No internships match that search.</h2>
+        <p>Try a broader title or check back in a little later for new roles.</p>
+      </div>
+      {% endif %}
+    </section>
+  </main>
+</div>
+{% endblock %}

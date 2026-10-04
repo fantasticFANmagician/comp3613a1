@@ -1,0 +1,1 @@
+"""InterHub application package."""

@@ -5,47 +5,140 @@ Draft this file with the Guide. **Update it after every phase milestone** before
 Do not put your student ID in this file if you will commit it. The PDF cover adds your name and ID at export time.
 
 ## Assigned project
+Internship Platform
 
 ## Three workflows
 
-### 1.
+### 1. Browse and apply to internships (Student)
 
-### 2.
+### 2. Post and manage internship listings (Employer)
 
-### 3.
+### 3. Review applicants and send offers (Employer)
 
 ## Use case diagram
 
 ![Use case diagram](diagrams/use-case.png)
 
+The Student and Employer use cases are separate, with no use cases shared across roles. The compound workflows are split into `Browse Internships` / `Apply to Internship`, `Post Internship Listing` / `Manage Internship Listings`, and `Review Applicants` / `Send Offer`. `Send Offer` extends `Review Applicants`; `Accept Offer` and `Decline Offer` extend the Student's `Respond to Offer` use case.
+
 ## Model diagram
 
-First draft. Update this section in Phase 5 when polish revises the model, and note what changed.
+Phase 3 first draft. Update this section in Phase 5 if implementation polish changes the model.
 
 ```mermaid
 erDiagram
-  ENTITY ||--o{ OTHER : relates
+  EMPLOYER ||--o{ INTERNSHIP_LISTING : posts
+  STUDENT ||--o{ APPLICATION : submits
+  INTERNSHIP_LISTING ||--o{ APPLICATION : receives
+  APPLICATION ||--o| OFFER : may_result_in
+
+  STUDENT {
+    int studentID PK
+    string fullName
+    string email UK
+    string password
+    string university
+    string major
+    string resume
+  }
+  EMPLOYER {
+    int employerID PK
+    string companyName
+    string contactName
+    string email UK
+    string password
+  }
+  INTERNSHIP_LISTING {
+    int listingID PK
+    int employerID FK
+    string title
+    string description
+    boolean isPaid
+    string status
+    date dayPosted
+  }
+  APPLICATION {
+    int applicationID PK
+    int studentID FK
+    int listingID FK
+    string coverLetter
+    date dateSubmitted
+    string status
+  }
+  OFFER {
+    int offerID PK
+    int applicationID FK, UK
+    date dateSent
+    date startDate
+    string status
+  }
 ```
+
+`Application` resolves the Student-to-InternshipListing many-to-many relationship; `(studentID, listingID)` is unique, so a student cannot apply to the same listing twice. `Offer.applicationID` is unique, allowing at most one Offer per Application. Emails are unique within each entity. Applications are allowed only while a listing is open. An Employer may create an Offer only for an Application with status `accepted` (Employer-selected); `Offer.status = accepted` means the Student accepted the offer. Listing statuses are `open` / `closed`; application statuses are `submitted` / `under review` / `accepted` / `rejected`; offer statuses are `pending` / `accepted` / `declined`.
 
 ## Wireframes
 
-Embed each student-crafted wireframe here (Phase 4). Paths are relative to this file:
+### Internship Platform workflows
 
-```markdown
-### Explore / Search Publications
+![Internship Platform wireframes covering student and employer workflows](wireframes/wireframe_diagram.excalidraw.png)
 
-![Explore / Search Publications](wireframes/explore.png)
-```
+Coverage: the image shows the student browse, application, and offer screens, plus employer listing creation/management and applicant review/offer screens. The login screen is supporting authentication. Existing ERD fields cover the labels, filters, dates, and statuses shown, so no model revision is proposed for Phase 4.
 
-`python manage.py report` also embeds any PNG/JPG still missing from `docs/wireframes/`.
+<!-- student-build:wireframe-coverage
+use_case: Browse Internships
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
+<!-- student-build:wireframe-coverage
+use_case: Apply to Internship
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
+<!-- student-build:wireframe-coverage
+use_case: Respond to Offer
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
+<!-- student-build:wireframe-coverage
+use_case: Accept Offer
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
+<!-- student-build:wireframe-coverage
+use_case: Decline Offer
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
+<!-- student-build:wireframe-coverage
+use_case: Post Internship Listing
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
+<!-- student-build:wireframe-coverage
+use_case: Manage Internship Listings
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
+<!-- student-build:wireframe-coverage
+use_case: Review Applicants
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
+<!-- student-build:wireframe-coverage
+use_case: Send Offer
+image: docs/wireframes/wireframe_diagram.excalidraw.png
+covered: yes
+-->
 
 ## Theming
 
-Branding preferences and how they were applied (landing / login / register).
+InterHub uses navy as its primary color, teal accents, warm coral highlights, white / light-grey backgrounds, and Manrope + DM Sans sans-serif typography. Green, amber, and red status-label tokens are defined for workflow states. The landing, login, and registration pages now use the InterHub wordmark and theme. The placeholder `/app` and `/admin` pages are removed; authentication and `/config` remain.
 
 ## Implementation notes
 
-One named workflow at a time. Include verify notes and polish / model revisions (Phase 5). Do not treat the first build as final.
+Phase 5 begins with the first named workflow: Browse and apply to internships (Student). The app now includes a branded student dashboard view at `internships.html` and a thin route in `app/routers/internships.py` that delegates to the service and repository layers. The repository seeds demo internship listings when the store is empty, creates a one-to-one `Student` profile for the logged-in user, and enforces the unique application constraint to prevent duplicate submissions. The flow is intentionally kept thin at the route layer, with actual filtering, profile creation, and application writes living in the repository/service stack.
+
+A real implementation check is pending in the local runtime, because the Windows environment here does not expose a functioning Python interpreter for `python manage.py init` or `python manage.py run` in this session. Static editor validation shows no file errors for the new route, service, repository, template, or stylesheet.
 
 ## Deployed app
 

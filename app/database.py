@@ -3,6 +3,7 @@ import threading
 import time
 from contextlib import contextmanager
 
+from sqlalchemy import inspect, text
 from sqlalchemy.exc import DBAPIError, OperationalError, ProgrammingError
 from sqlmodel import SQLModel, Session, create_engine
 
@@ -38,6 +39,16 @@ def create_db_and_tables() -> None:
     import app.models  # noqa: F401
 
     SQLModel.metadata.create_all(engine)
+    with engine.begin() as connection:
+        inspector = inspect(connection)
+        if "application" not in inspector.get_table_names():
+            return
+
+        columns = {column["name"] for column in inspector.get_columns("application")}
+        if "documentName" not in columns:
+            connection.execute(text("ALTER TABLE application ADD COLUMN documentName VARCHAR"))
+        if "documentPath" not in columns:
+            connection.execute(text("ALTER TABLE application ADD COLUMN documentPath VARCHAR"))
 
 
 def drop_all() -> None:

@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, Request, status
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import RedirectResponse
@@ -29,9 +30,16 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.include_router(router)
-app.include_router(api_router)
+for mounted_router in (router, api_router):
+    for route in mounted_router.routes:
+        if not any(
+            existing.path == route.path and getattr(existing, "methods", None) == getattr(route, "methods", None)
+            for existing in app.router.routes
+        ):
+            app.router.routes.append(route)
+
 app.mount("/static", static_files, name="static")
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 
 @app.middleware("http")

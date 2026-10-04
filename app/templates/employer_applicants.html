@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Applicants | InterHub{% endblock %}
+
+{% block content %}
+<div class="internship-page">
+  <header class="internship-header">
+    <a class="brand-wordmark internship-brand" href="{{ url_for('index_view') }}">Inter<span class="brand-highlight">Hub</span></a>
+    <nav class="internship-nav" aria-label="Main navigation">
+      <a href="{{ url_for('employer_dashboard') }}">Listings</a>
+      <a href="{{ url_for('employer_applicants') }}" class="active">Applicants</a>
+      <a href="{{ url_for('logout') }}">Sign out</a>
+    </nav>
+  </header>
+
+  <main class="internship-main">
+    <section class="internship-shell">
+      <div class="internship-topbar">
+        <div>
+          <p class="internship-kicker">Applicant overview</p>
+          <h1>All applicants</h1>
+        </div>
+        <span class="status-label status-label-success">Hiring</span>
+      </div>
+
+      {% if groups %}
+        {% for group in groups %}
+        <article class="listing-card applicants-overview-card">
+          <div class="listing-head">
+            <span class="status-label {% if group.listing.status == 'open' %}status-label-success{% else %}status-label-warning{% endif %}">{{ group.listing.status }}</span>
+            <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('listing_applicants', listing_id=group.listing.listingID) }}">View listing</a>
+          </div>
+
+          <div class="listing-summary-block">
+            <h2>{{ group.listing.title }}</h2>
+            <p class="listing-description">{{ group.listing.description }}</p>
+          </div>
+
+          {% if group.applications %}
+            <div class="applicants-stack">
+              {% for item in group.applications %}
+              <div class="application-row">
+                <div class="application-meta">
+                  <strong>{{ item.student.fullName if item.student else 'Student ' ~ item.application.studentID }}</strong>
+                  <p>{{ item.application.coverLetter }}</p>
+                  {% if item.application.documentName %}
+                  <p>
+                    <a href="{{ url_for('download_application_attachment', application_id=item.application.applicationID) }}" target="_blank" rel="noopener noreferrer">
+                      Download {{ item.application.documentName }}
+                    </a>
+                  </p>
+                  {% endif %}
+                </div>
+                {% if item.application.status == 'rejected' %}
+                  <div class="offer-status-block">
+                    <span class="status-label status-label-danger">Rejected</span>
+                    <p class="offer-sent-note">Application rejected.</p>
+                  </div>
+                {% elif item.offer %}
+                  <div class="offer-status-block">
+                    <span class="status-label {% if item.offer.status == 'accepted' %}status-label-success{% elif item.offer.status == 'declined' %}status-label-danger{% else %}status-label-warning{% endif %}">{{ item.offer.status|title }}</span>
+                    <p class="offer-sent-note">Offer already sent.</p>
+                  </div>
+                {% else %}
+                <div class="applicant-review-actions">
+                  <form method="post" action="{{ url_for('create_offer', application_id=item.application.applicationID) }}" class="offer-form">
+                    <label class="form-label" for="start-date-{{ item.application.applicationID }}">Start date</label>
+                    <input class="form-control" id="start-date-{{ item.application.applicationID }}" name="start_date" type="date" required>
+                    <button type="submit" class="btn btn-primary mt-2">Send offer</button>
+                  </form>
+                  <form method="post" action="{{ url_for('reject_application', application_id=item.application.applicationID) }}">
+                    <button type="submit" class="btn btn-outline-danger">Reject application</button>
+                  </form>
+                </div>
+                {% endif %}
+              </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="no-applications">No applicants yet for this listing.</p>
+          {% endif %}
+        </article>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <h2>No applicants yet.</h2>
+          <p>Once candidates apply to your listings, they’ll appear here.</p>
+        </div>
+      {% endif %}
+    </section>
+  </main>
+</div>
+{% endblock %}

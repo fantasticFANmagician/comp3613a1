@@ -34,9 +34,9 @@ async def login_action_ajax(
         )
 
     user = user_repo.get_by_username(username)
-    dest = "admin_home_view" if user and user.role == "admin" else "user_home_view"
+    target_name = "employer_dashboard" if user and user.role == "employer" else "browse_internships"
     response = RedirectResponse(
-        url=request.url_for(dest),
+        url=request.url_for(target_name),
         status_code=status.HTTP_303_SEE_OTHER,
     )
     response.set_cookie(

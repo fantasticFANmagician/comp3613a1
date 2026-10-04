@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}My activity | InterHub{% endblock %}
+
+{% block content %}
+<div class="internship-page">
+  <header class="internship-header">
+    <a class="brand-wordmark internship-brand" href="{{ url_for('index_view') }}">Inter<span class="brand-highlight">Hub</span></a>
+    <nav class="internship-nav" aria-label="Main navigation">
+      <a href="{{ url_for('browse_internships') }}">Browse</a>
+      <a href="{{ url_for('student_activity') }}" class="active">My activity</a>
+      <a href="{{ url_for('logout') }}">Sign out</a>
+    </nav>
+  </header>
+
+  <main class="internship-main">
+    <section class="internship-shell">
+      <div class="internship-topbar">
+        <div>
+          <p class="internship-kicker">Student dashboard</p>
+          <h1>My activity</h1>
+        </div>
+      </div>
+
+      <nav class="student-activity-tabs" aria-label="My activity views">
+        <a
+          href="{{ url_for('student_activity') }}?view=applications"
+          class="student-activity-tab{% if active_view == 'applications' %} active{% endif %}"
+          {% if active_view == 'applications' %}aria-current="page"{% endif %}
+        >Applications</a>
+        <a
+          href="{{ url_for('student_activity') }}?view=offers"
+          class="student-activity-tab{% if active_view == 'offers' %} active{% endif %}"
+          {% if active_view == 'offers' %}aria-current="page"{% endif %}
+        >Offers</a>
+      </nav>
+
+      {% if active_view == 'applications' %}
+        <section aria-labelledby="applications-heading">
+          <h2 id="applications-heading">My applications</h2>
+          {% if student_applications %}
+            {% for item in student_applications %}
+            <div class="application-row">
+              <div class="application-meta">
+                <strong>{{ item.listing.title if item.listing else 'Internship opportunity' }}</strong>
+                <p>Submitted: {{ item.application.dateSubmitted }}</p>
+                <p>Status: <span class="status-label {% if item.status in ['submitted', 'under review', 'pending your decision'] %}status-label-warning{% elif item.status == 'accepted' %}status-label-success{% else %}status-label-danger{% endif %}">{{ item.status|capitalize }}</span></p>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+          <div class="empty-state">
+            <h2>No applications yet.</h2>
+            <p>Your submitted applications will appear here.</p>
+            <a class="btn btn-primary" href="{{ url_for('browse_internships') }}">Browse internships</a>
+          </div>
+          {% endif %}
+        </section>
+      {% else %}
+        <section aria-labelledby="offers-heading">
+          <h2 id="offers-heading">My offers</h2>
+          {% if student_offers %}
+            {% for item in student_offers %}
+            <div class="application-row">
+              <div class="application-meta">
+                <strong>{{ item.listing.title if item.listing else 'Internship opportunity' }}</strong>
+                <p>Start date: {{ item.offer.startDate }}</p>
+                <p>Status: <span class="status-label {% if item.offer.status == 'pending' %}status-label-warning{% elif item.offer.status == 'accepted' %}status-label-success{% else %}status-label-danger{% endif %}">{{ item.offer.status }}</span></p>
+              </div>
+              {% if item.offer.status == 'pending' %}
+              <div class="d-flex gap-2 flex-wrap offer-actions">
+                <form method="post" action="{{ url_for('respond_to_offer', offer_id=item.offer.offerID) }}">
+                  <input type="hidden" name="response" value="accepted">
+                  <button type="submit" class="btn btn-primary">Accept offer</button>
+                </form>
+                <form method="post" action="{{ url_for('respond_to_offer', offer_id=item.offer.offerID) }}">
+                  <input type="hidden" name="response" value="declined">
+                  <button type="submit" class="btn btn-outline-secondary">Decline offer</button>
+                </form>
+              </div>
+              {% endif %}
+            </div>
+            {% endfor %}
+          {% else %}
+          <div class="empty-state">
+            <h2>No offers yet.</h2>
+            <p>Offers from employers will appear here.</p>
+          </div>
+          {% endif %}
+        </section>
+      {% endif %}
+    </section>
+  </main>
+</div>
+{% endblock %}

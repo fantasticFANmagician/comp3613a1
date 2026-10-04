@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Employer dashboard | InterHub{% endblock %}
+
+{% block content %}
+<div class="internship-page">
+  <header class="internship-header">
+    <a class="brand-wordmark internship-brand" href="{{ url_for('index_view') }}">Inter<span class="brand-highlight">Hub</span></a>
+    <nav class="internship-nav" aria-label="Main navigation">
+      <a href="{{ url_for('employer_dashboard') }}" class="active">Listings</a>
+      <a href="{{ url_for('employer_applicants') }}">Applicants</a>
+      <a href="{{ url_for('logout') }}">Sign out</a>
+    </nav>
+  </header>
+
+  <main class="internship-main">
+    <section class="internship-shell">
+      <div class="internship-topbar">
+        <div>
+          <p class="internship-kicker">Employer workspace</p>
+          <h1>{{ user.username }}'s listings</h1>
+        </div>
+        <span class="status-label status-label-success">Hiring</span>
+      </div>
+
+      {% for message in get_flashed_messages(request) %}
+      <div class="alert alert-{{ message.type }} mb-3" role="alert">{{ message.message }}</div>
+      {% endfor %}
+
+      <form method="post" action="{{ url_for('create_listing') }}" class="listing-form">
+        <h2>Post a new internship</h2>
+        <div class="mb-3">
+          <label class="form-label" for="title">Title</label>
+          <input class="form-control" id="title" name="title" type="text" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="description">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+        </div>
+        <div class="form-check mb-3">
+          <input class="form-check-input" id="is_paid" name="is_paid" type="checkbox" value="true">
+          <label class="form-check-label" for="is_paid">This internship is paid</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Post listing</button>
+      </form>
+
+      {% if listings %}
+        {% for row in listings %}
+        <article class="listing-card">
+          <div class="listing-head">
+            <span class="status-label {% if row.listing.status == 'open' %}status-label-success{% else %}status-label-warning{% endif %}">{{ row.listing.status }}</span>
+            <span class="listing-pay">{{ 'Paid' if row.listing.isPaid else 'Unpaid' }}</span>
+          </div>
+
+          <div class="listing-summary-block">
+            <h2>{{ row.listing.title }}</h2>
+            <p class="listing-description">{{ row.listing.description }}</p>
+          </div>
+
+          <div class="listing-actions listing-actions-split">
+            <form method="post" action="{{ url_for('close_listing', listing_id=row.listing.listingID) }}">
+              <button type="submit" class="btn btn-primary">{{ 'Close listing' if row.listing.status == 'open' else 'Reopen listing' }}</button>
+            </form>
+            <details class="listing-edit-wrapper">
+              <summary>Edit listing</summary>
+              <form method="post" action="{{ url_for('edit_listing', listing_id=row.listing.listingID) }}" class="listing-edit-form">
+                <div class="mb-3">
+                  <label class="form-label" for="title-{{ row.listing.listingID }}">Title</label>
+                  <input class="form-control" id="title-{{ row.listing.listingID }}" name="title" type="text" value="{{ row.listing.title }}" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="description-{{ row.listing.listingID }}">Description</label>
+                  <textarea class="form-control" id="description-{{ row.listing.listingID }}" name="description" rows="4" required>{{ row.listing.description }}</textarea>
+                </div>
+                <div class="form-check mb-3">
+                  <input class="form-check-input" id="is_paid-{{ row.listing.listingID }}" name="is_paid" type="checkbox" value="true" {% if row.listing.isPaid %}checked{% endif %}>
+                  <label class="form-check-label" for="is_paid-{{ row.listing.listingID }}">This internship is paid</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </form>
+            </details>
+          </div>
+        </article>
+        {% endfor %}
+      {% else %}
+      <div class="empty-state">
+        <h2>No listings yet.</h2>
+        <p>Post an internship to start reviewing candidates.</p>
+      </div>
+      {% endif %}
+    </section>
+  </main>
+</div>
+{% endblock %}

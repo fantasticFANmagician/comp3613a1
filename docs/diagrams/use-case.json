@@ -1,0 +1,45 @@
+{
+  "system": "Internship Platform",
+  "actors": [
+    {"name": "Student", "side": "left"},
+    {"name": "Employer", "side": "right"}
+  ],
+  "use_cases": [
+    {
+      "name": "Browse Internships",
+      "actors": ["Student"]
+    },
+    {
+      "name": "Apply to Internship",
+      "actors": ["Student"]
+    },
+    {
+      "name": "Respond to Offer",
+      "actors": ["Student"]
+    },
+    {
+      "name": "Accept Offer",
+      "extends": ["Respond to Offer"]
+    },
+    {
+      "name": "Decline Offer",
+      "extends": ["Respond to Offer"]
+    },
+    {
+      "name": "Post Internship Listing",
+      "actors": ["Employer"]
+    },
+    {
+      "name": "Manage Internship Listings",
+      "actors": ["Employer"]
+    },
+    {
+      "name": "Review Applicants",
+      "actors": ["Employer"]
+    },
+    {
+      "name": "Send Offer",
+      "extends": ["Review Applicants"]
+    }
+  ]
+}

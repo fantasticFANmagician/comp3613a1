@@ -1,16 +1,13 @@
 {% extends "base.html" %}
-{% block title %}FastStarter{% endblock %}
+{% block title %}InterHub{% endblock %}
 
 {% block content %}
 <div class="landing">
-  <div class="landing-orb" aria-hidden="true"></div>
-  <div class="landing-orb landing-orb-2" aria-hidden="true"></div>
-
   <header class="landing-nav">
-    <a class="brand-wordmark" href="{{ url_for('index_view') }}">FastStarter</a>
+    <a class="brand-wordmark" href="{{ url_for('index_view') }}">Inter<span class="brand-highlight">Hub</span></a>
     <div class="landing-nav-actions">
       {% if user_logged_in %}
-      <a class="btn-landing btn-landing-ghost" href="{{ app_home }}">Open app</a>
+      <a class="btn-landing btn-landing-ghost" href="{{ url_for('browse_internships') }}">Browse internships</a>
       <a class="btn-landing btn-landing-ghost" href="{{ url_for('logout') }}">Sign out</a>
       {% else %}
       <a class="btn-landing btn-landing-ghost" href="{{ url_for('login_view') }}">Sign in</a>
@@ -19,25 +16,53 @@
     </div>
   </header>
 
-  <main class="landing-hero">
-    <p class="landing-kicker">Coursework starter</p>
-    <h1 class="brand-wordmark">FastStarter</h1>
-    <p class="landing-lead">
-      A placeholder landing page for your COMP 3613 app.
-      Phase 5 theming replaces these colors, type, and copy with your brand.
-    </p>
-    <div class="landing-cta">
-      {% if user_logged_in %}
-      <a class="btn-landing btn-landing-primary" href="{{ app_home }}">Continue to app</a>
-      {% else %}
-      <a class="btn-landing btn-landing-primary" href="{{ url_for('register_view') }}">Create account</a>
-      <a class="btn-landing btn-landing-ghost" href="{{ url_for('login_view') }}">Sign in</a>
+  <main class="landing-main">
+    <section class="landing-hero">
+      <p class="landing-kicker">Internship platform</p>
+      <h1 class="brand-wordmark">Inter<span class="brand-highlight">Hub</span></h1>
+      <p class="landing-lead">A more connected start to the next opportunity.</p>
+      <p class="landing-subtext">Discover internships, apply with confidence, and match with employers who are ready to hire.</p>
+      {% if not user_logged_in %}
+      <div class="landing-cta">
+        <a class="btn-landing btn-landing-primary" href="{{ url_for('register_view') }}">Create account</a>
+        <a class="btn-landing btn-landing-ghost" href="{{ url_for('login_view') }}">Sign in</a>
+      </div>
       {% endif %}
-    </div>
+
+      <div class="landing-features" aria-label="Platform highlights">
+        <article class="landing-feature-card">
+          <span class="feature-pill">Students</span>
+          <h2>Track your applications</h2>
+          <p>Browse openings, submit tailored applications, and keep tabs on every offer in one place.</p>
+        </article>
+        <article class="landing-feature-card">
+          <span class="feature-pill feature-pill-teal">Employers</span>
+          <h2>Hire faster</h2>
+          <p>Post your available roles, review applicants clearly, and send offers from a single dashboard.</p>
+        </article>
+      </div>
+    </section>
+    <aside class="landing-visual" aria-label="Students and employers">
+      <p class="landing-visual-label">One meeting point</p>
+      <div class="landing-role-pair">
+        <span>Students</span><span aria-hidden="true">&amp;</span><span>Employers</span>
+      </div>
+      <div class="landing-visual-rule" aria-hidden="true"></div>
+      <div class="landing-stats" aria-label="Key stats">
+        <div>
+          <strong>Open roles</strong>
+          <span>Live listings</span>
+        </div>
+        <div>
+          <strong>Offer flow</strong>
+          <span>Student + employer</span>
+        </div>
+      </div>
+    </aside>
   </main>
 
   <footer class="landing-foot">
-    Demo logins after <code>python manage.py init</code>: bob / bobpass · admin / adminpass
+    InterHub <span aria-hidden="true">/</span> Internship Platform
   </footer>
 </div>
 {% endblock %}

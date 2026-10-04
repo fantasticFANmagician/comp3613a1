@@ -49,8 +49,8 @@ def cmd_init(args: argparse.Namespace) -> None:
 def cmd_seed(args: argparse.Namespace) -> None:
     """Insert demo users.
 
-    bob / bobpass       (regular_user)
-    admin / adminpass   (admin)
+    bob / bobpass       (student)
+    admin / adminpass   (employer)
     """
     from app.database import ensure_db_and_tables, get_cli_session
     from app.repositories.user import UserRepository
@@ -61,8 +61,8 @@ def cmd_seed(args: argparse.Namespace) -> None:
     ensure_db_and_tables()
 
     demo_users = [
-        ("bob", "bob@example.com", "bobpass", "regular_user"),
-        ("admin", "admin@example.com", "adminpass", "admin"),
+        ("bob", "bob@example.com", "bobpass", "student"),
+        ("admin", "admin@example.com", "adminpass", "employer"),
     ]
 
     created = 0

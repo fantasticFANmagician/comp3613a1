@@ -136,21 +136,21 @@ InterHub uses navy as its primary color, teal accents, warm coral highlights, wh
 
 ## Implementation notes
 
-Phase 5 begins with the first named workflow: Browse and apply to internships (Student). The app now includes a branded student dashboard view at `internships.html` and a thin route in `app/routers/internships.py` that delegates to the service and repository layers. The repository seeds demo internship listings when the store is empty, creates a one-to-one `Student` profile for the logged-in user, and enforces the unique application constraint to prevent duplicate submissions. The flow is intentionally kept thin at the route layer, with actual filtering, profile creation, and application writes living in the repository/service stack.
+Phase 5 is verified locally for the core internship workflows. The app includes a branded student dashboard at `internships.html`, a dedicated `My activity` area for applications and offers, and the employer workflow for posting, editing, reviewing applicants, sending offers, and rejecting applications. The route layer remains thin and delegates to the service/repository stack, while the model keeps the one-to-one User-to-Student and User-to-Employer mappings, unique application rules, and file-attachment metadata for employer downloads.
 
-A real implementation check is pending in the local runtime, because the Windows environment here does not expose a functioning Python interpreter for `python manage.py init` or `python manage.py run` in this session. Static editor validation shows no file errors for the new route, service, repository, template, or stylesheet.
+The project was checked in a live local runtime: `python -m pytest tests/test_internship_workflows.py -q` passed with 7 passing tests, `python manage.py init` created the full schema successfully, and `python manage.py run` started the app on http://0.0.0.0:5000 without startup errors. The browser also loaded the InterHub landing page successfully at http://127.0.0.1:5000/.
 
 ## Deployed app
 
-Phase 6. Public Render URL (not localhost). Markers open this to mark the three workflows.
+Phase 6 is live on Render.
 
-https://
+https://faststarter-b222.onrender.com
 
 ## Logins
 
 Every account a marker needs, including extra users you added. Starter accounts:
 
-- bob / bobpass — regular user
+- bob / bobpass — student / regular user
 - admin / adminpass — admin
 
 ## YouTube URL

@@ -4,6 +4,13 @@ from sqlmodel import Session, SQLModel, create_engine, select
 from app.models.internship import Application, Employer, InternshipListing, Offer, Student
 from app.models.user import User
 from app.repositories.internship import InternshipRepository
+from app.services.auth_service import normalize_role
+
+
+def test_regular_user_role_is_treated_as_student():
+    assert normalize_role("regular_user") == "student"
+    assert normalize_role("student") == "student"
+    assert normalize_role("employer") == "employer"
 
 
 def test_employer_and_offer_flow():

@@ -2,7 +2,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import Request, status, Form
 from app.dependencies import SessionDep
 from . import router, templates
-from app.services.auth_service import AuthService
+from app.services.auth_service import AuthService, normalize_role
 from app.repositories.user import UserRepository
 from app.utilities.flash import flash
 from app.utilities.security import access_token_cookie_kwargs
@@ -34,7 +34,13 @@ async def login_action_ajax(
         )
 
     user = user_repo.get_by_username(username)
-    target_name = "employer_dashboard" if user and user.role == "employer" else "browse_internships"
+    user_role = normalize_role(user.role if user else "")
+    if user_role == "employer":
+        target_name = "employer_dashboard"
+    elif user_role == "student":
+        target_name = "student_activity"
+    else:
+        target_name = "browse_internships"
     response = RedirectResponse(
         url=request.url_for(target_name),
         status_code=status.HTTP_303_SEE_OTHER,

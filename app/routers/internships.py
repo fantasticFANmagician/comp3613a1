@@ -51,7 +51,7 @@ async def browse_internships(
     internship_service = InternshipService(internship_repo)
     listings = internship_service.browse_open_listings(q or "")
     applied_listing_ids = set()
-    if user.role == "student":
+    if user.role in {"student", "regular_user"}:
         applied_listing_ids = internship_service.get_applied_listing_ids(user.id, user.username)
     return templates.TemplateResponse(
         request=request,
@@ -72,7 +72,7 @@ async def student_activity(
     db: SessionDep,
     view: str = "applications",
 ):
-    if user.role != "student":
+    if user.role not in {"student", "regular_user"}:
         return RedirectResponse(
             url=request.url_for("browse_internships"),
             status_code=status.HTTP_303_SEE_OTHER,

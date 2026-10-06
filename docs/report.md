@@ -150,8 +150,8 @@ https://faststarter-b222.onrender.com
 
 Every account a marker needs, including extra users you added. Starter accounts:
 
-- bob / bobpass — student / regular user
-- admin / adminpass — admin
+- bob / bobpass — student
+- admin / adminpass — employer
 
 ## YouTube URL
 

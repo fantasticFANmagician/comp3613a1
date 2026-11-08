@@ -1,0 +1,33 @@
+{
+  "info": {
+    "_postman_id": "2b18d209-5004-4f20-acad-d6ad3904f6d5",
+    "name": "InterHub API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60037441",
+    "_collection_link": "https://go.postman.co/collection/60037441-2b18d209-5004-4f20-acad-d6ad3904f6d5?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ]
+}

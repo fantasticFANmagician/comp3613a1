@@ -25,7 +25,9 @@ class InternshipRepository:
         return employer
 
     def find_open_listings(self, title_filter: str = "") -> list[InternshipListing]:
-        statement = select(InternshipListing).where(InternshipListing.status == "open")
+        statement = select(InternshipListing).where(
+            InternshipListing.status.ilike("open")
+        )
         filter_text = (title_filter or "").strip()
         if filter_text:
             statement = statement.where(InternshipListing.title.ilike(f"%{filter_text}%"))

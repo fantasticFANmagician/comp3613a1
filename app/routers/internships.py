@@ -35,6 +35,7 @@ async def save_application_document(document: UploadFile | None) -> tuple[str | 
 
 
 @router.get("/internships", response_class=HTMLResponse, name="browse_internships")
+@router.get("/browse", include_in_schema=False)
 async def browse_internships(
     request: Request,
     user: AuthDep,
@@ -193,6 +194,7 @@ async def listing_applicants(
 
 
 @router.post("/employer/listings", name="create_listing")
+@router.post("/listings", include_in_schema=False)
 async def create_listing(
     request: Request,
     user: AuthDep,

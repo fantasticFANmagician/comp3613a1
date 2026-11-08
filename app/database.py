@@ -50,6 +50,15 @@ def create_db_and_tables() -> None:
         if "documentPath" not in columns:
             connection.execute(text("ALTER TABLE application ADD COLUMN documentPath VARCHAR"))
 
+    if "student" in inspector.get_table_names():
+        columns = {column["name"] for column in inspector.get_columns("student")}
+        if "email" not in columns:
+            connection.execute(text("ALTER TABLE student ADD COLUMN email VARCHAR"))
+        if "password" not in columns:
+            connection.execute(text("ALTER TABLE student ADD COLUMN password VARCHAR"))
+        if "role" not in columns:
+            connection.execute(text("ALTER TABLE student ADD COLUMN role VARCHAR DEFAULT 'student'"))
+
 
 def drop_all() -> None:
     SQLModel.metadata.drop_all(bind=engine)

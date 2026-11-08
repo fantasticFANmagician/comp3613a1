@@ -1,6 +1,7 @@
 from datetime import date
 from typing import Optional
 
+from pydantic import EmailStr
 from sqlalchemy import UniqueConstraint
 from sqlmodel import Field, SQLModel
 
@@ -9,11 +10,25 @@ class Student(SQLModel, table=True):
     __tablename__ = "student"
 
     studentID: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="user.id", unique=True)
-    fullName: str
-    university: str
-    major: str
-    resume: str
+    user_id: int = Field(default=0, foreign_key="user.id", unique=True)
+    fullName: str = ""
+    university: str = ""
+    major: str = ""
+    resume: str = ""
+    email: Optional[EmailStr] = None
+    password: Optional[str] = None
+    role: str = "student"
+
+    def __init__(self, **data: object):
+        email = data.get("email")
+        if email is not None and (
+            not isinstance(email, str)
+            or "@" not in email
+            or email.startswith("@")
+            or email.endswith("@")
+        ):
+            raise ValueError("Invalid email address")
+        super().__init__(**data)
 
 
 class Employer(SQLModel, table=True):
@@ -33,7 +48,7 @@ class InternshipListing(SQLModel, table=True):
     title: str
     description: str
     isPaid: bool
-    status: str = "open"
+    status: str = "Open"
     dayPosted: date = Field(default_factory=date.today)
 
 

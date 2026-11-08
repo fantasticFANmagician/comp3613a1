@@ -10,30 +10,30 @@ skinparam rectangleBorderColor #1B365D
 skinparam rectangleBackgroundColor #F8FAFC
 skinparam arrowColor #1B365D
 
-actor "Student" as AStudent
+actor "Student" as Student
 
 rectangle "Internship Platform" {
-  usecase "Browse Internships" as UCBrowse
-  usecase "Apply to Internship" as UCApply
-  usecase "Respond to Offer" as UCRespond
-  usecase "Accept Offer" as UCAccept
-  usecase "Decline Offer" as UCDecline
-  usecase "Post Internship Listing" as UCPost
-  usecase "Manage Internship Listings" as UCManage
-  usecase "Review Applicants" as UCReview
-  usecase "Send Offer" as UCSend
+  usecase "Browse Internships" as Browse_Internships
+  usecase "Apply to Internship" as Apply_to_Internship
+  usecase "Respond to Offer" as Respond_to_Offer
+  usecase "Accept Offer" as Accept_Offer
+  usecase "Decline Offer" as Decline_Offer
+  usecase "Post Internship Listing" as Post_Internship_Listing
+  usecase "Manage Internship Listings" as Manage_Internship_Listings
+  usecase "Review Applicants" as Review_Applicants
+  usecase "Send Offer" as Send_Offer
 }
 
-actor "Employer" as AEmployer
+actor "Employer" as Employer
 
-AStudent --> UCBrowse
-AStudent --> UCApply
-AStudent --> UCRespond
-UCPost <-- AEmployer
-UCManage <-- AEmployer
-UCReview <-- AEmployer
-UCAccept ..> UCRespond : <<extend>>
-UCDecline ..> UCRespond : <<extend>>
-UCSend ..> UCReview : <<extend>>
+Student --> Browse_Internships
+Student --> Apply_to_Internship
+Student --> Respond_to_Offer
+Accept_Offer ..> Respond_to_Offer : <<extend>>
+Decline_Offer ..> Respond_to_Offer : <<extend>>
+Post_Internship_Listing <-- Employer
+Manage_Internship_Listings <-- Employer
+Review_Applicants <-- Employer
+Send_Offer ..> Review_Applicants : <<extend>>
 
 @enduml

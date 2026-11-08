@@ -1,11 +1,11 @@
 # tests/test_integration.py
 from fastapi.testclient import TestClient
-from app.main import app  # Adjust this if your app is located elsewhere
+from app.main import app 
 
 client = TestClient(app)
 
 def test_login_token_grants_access():
-    # 1. Register a user (FastAPI expects form data, not JSON)
+    # 1. Register a user 
     client.post("/register", data={
         "username": "testuser", 
         "email": "test@test.com", 
@@ -17,7 +17,7 @@ def test_login_token_grants_access():
     response = client.post("/login", data={
         "username": "testuser", 
         "password": "password123"
-    }, follow_redirects=False) # Don't follow redirects so we can check the cookie
+    }, follow_redirects=False) 
     
     # 3. Assertions
     assert response.status_code == 303 # FastAPI returns 303 on successful form login
@@ -38,5 +38,4 @@ def test_post_then_browse():
     # 4. Browse listings
     response = client.get("/browse")
     assert response.status_code == 200
-    # Assuming your HTML template displays the title
     assert "Software Intern" in response.text
